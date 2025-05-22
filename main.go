@@ -1,30 +1,47 @@
 package main
 
-import "fmt"
+import (
+	"html/template"
+	"log"
+	"net/http"
+)
+
+type todoItem struct {
+	Task string
+	Done bool
+}
+
+type todoList struct {
+	Items []todoItem
+}
+
+var todos = todoList{
+	Items: []todoItem{
+		{Task: "Learn Go", Done: true},
+		{Task: "Build a web app", Done: false},
+		{Task: "Deploy to production", Done: false},
+	},
+}
 
 func main() {
-	var tasks = []string{
-		"Syntax lernen",
-		"Webservice erstellen",
-		"Job finden",
-	}
+	http.HandleFunc("/", indexHandler)
 
-	fmt.Println("Initial task list:")
-	printTasksToConsole(tasks)
-	tasks = addTask(tasks, "nicht wichsen")
-	printTasksToConsole(tasks)
-
-}
-
-func printTasksToConsole(tasks []string) {
-	for i, task := range tasks {
-		fmt.Printf("Task %d: %s\n", i+1, task)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func addTask(tasks []string, task string) []string {
-	newSlice := append(tasks, task)
-	fmt.Printf("\nTask <%s> added to the list\n\n", task)
-	return newSlice
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	rendertemplate(w, "index.html")
+}
+
+func rendertemplate(w http.ResponseWriter, tmpl string) {
+	t, err := template.ParseFiles("templates/" + tmpl)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(w, todos)
 
 }
