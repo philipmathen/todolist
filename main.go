@@ -11,7 +11,7 @@ func main() {
 
 	fmt.Println("Initial task list:")
 	printTasksToConsole(tasks)
-	addTask(&tasks, "nicht wichsen")
+	tasks = addTask(tasks, "nicht wichsen")
 	printTasksToConsole(tasks)
 
 }
@@ -22,7 +22,9 @@ func printTasksToConsole(tasks []string) {
 	}
 }
 
-func addTask(tasks *[]string, task string) {
-	*tasks = append(*tasks, task)
+func addTask(tasks []string, task string) []string {
+	newSlice := append(tasks, task)
 	fmt.Printf("\nTask <%s> added to the list\n\n", task)
+	return newSlice
+
 }
