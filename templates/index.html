@@ -19,11 +19,11 @@
       <ul class="my-8">
         {{range .Items}}
         <li class="py-2 px-4 border-b border-zinc-200 flex justify-start items-center">
-          <span class="mr-8 font-bold">{{.Id}}</span>
+          <span class="mr-8 font-bold">{{.Number}}</span>
           <span class="mr-8 font-light">{{.Task}}</span>
           <!-- Toggle Done -->
           <form action="/toggle" method="POST" class="ml-4 ml-auto">
-            <input type="hidden" name="id" value="{{.Id}}">
+            <input type="hidden" name="number" value="{{.Number}}">
             {{if .Done}}
             <button type="submit" class="text-xl cursor-pointer">✅</button>
             {{else}}
@@ -32,11 +32,11 @@
           </form>
           <!-- Delete Todo -->
           <form action="/delete" method="POST" class="ml-4">
-            <input type="hidden" name="id" value="{{.Id}}">
+            <input type="hidden" name="number" value="{{.Number}}">
             <button type="submit" class="text-xl cursor-pointer">🗑️</button>
           </form>
           <!-- Edit Todo -->
-          <button type="submit" class="text-xl cursor-pointer ml-4" onclick="openUpdateDialog({{.Id}},{{.Task}})">📝</button>
+          <button type="submit" class="text-xl cursor-pointer ml-4" onclick="openUpdateDialog({{.Number}},{{.Task}})">📝</button>
 
         </li>
         {{end}}
@@ -49,7 +49,7 @@
       <div class="h-auto w-sm p-8  bg-white rounded-xl shadow-lg flex flex-col items-baseline justify-between">
         <h2 class="text-xl font-bold mb-6">Edit Task <span id="tasknumber"></span></h2>
         <form action="/update" method="POST" class="w-full">
-          <input type="hidden" name="id" id="updateId" value="1">
+          <input type="hidden" name="number" id="updateId" value="1">
           <input type="text" name="task" placeholder="Task" id="updateTitle" class="border border-zinc-300 p-2 rounded mb-10 w-full">
           <div class="flex justify-between w-full">
             <button type="button" class="w-24 text-white bg-zinc-900 px-4 py-2 rounded" onclick="closeUpdateDialog()">close</button>
@@ -71,11 +71,11 @@
     </div>
   </main>
   <script>
-    openUpdateDialog = (id,title) => {
+    openUpdateDialog = (number,title) => {
       const dialog = document.getElementById('updateDialog');
-      document.getElementById('updateId').value = id;
+      document.getElementById('updateId').value = number;
       document.getElementById('updateTitle').value = title;
-      document.getElementById('tasknumber').innerText = id;
+      document.getElementById('tasknumber').innerText = number;
       //document.getElementById('updateTitle').value = title;
       //remove the class to show the dialog
       dialog.classList.remove('hidden');
