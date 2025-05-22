@@ -1,32 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hello Go</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  </head>
-  <body>
-    <main>
-    <div class="rounded border border-gray-200 mx-auto mt-10 flex flex-col items-center justify-center w-1/4 p-5 bg-white shadow-lg">
-        <h1 class="font-bold">Todo List</h1>
-        <ul>
-            {{range .Items}}
-            <li class="py-2 px-4 border-b border-gray-200 flex justify-between items-center">
-                <span class="mr-8">{{.Task}}</span>
-                {{if .Done}}
-                    <span class="">✅</span>
-                {{else}}
-                    <span class="">❌</span>
-                {{end}}
-            </li>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Hello Go</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+  <main>
+    <div
+      class="rounded-xl border border-zinc-200 mx-auto mt-10 flex flex-col items-center justify-cente w-full  md:w-1/3 p-5 bg-white shadow-lg">
+      <h1 class="font-bold text-3xl">Todo List</h1>
+      <ul class="my-8">
+        {{range .Items}}
+        <li class="py-2 px-4 border-b border-zinc-200 flex justify-start items-center">
+          <span class="mr-8 font-bold">{{.Id}}</span>
+          <span class="mr-8 font-light">{{.Task}}</span>
+          <!-- Toggle Done -->
+          <form action="/toggle" method="POST" class="ml-4 ml-auto">
+            <input type="hidden" name="id" value="{{.Id}}">
+            {{if .Done}}
+            <button type="submit" class="text-xl cursor-pointer">✅</button>
+            {{else}}
+            <button type="submit" class="text-xl  cursor-pointer">❌</button>
             {{end}}
-        </ul>
+          </form>
+          <!-- Delete Todo -->
+          <form action="/delete" method="POST" class="ml-4">
+            <input type="hidden" name="id" value="{{.Id}}">
+            <button type="submit" class="text-xl cursor-pointer">🗑️</button>
+          </form>
+          <!-- Edit Todo -->
+          <button type="submit" class="text-xl cursor-pointer ml-4" onclick="openUpdateDialog({{.Id}},{{.Task}})">📝</button>
+
+        </li>
+        {{end}}
+      </ul>
     </div>
-    </main>
-    <script src="index.js"></script>
-  </body>
+
+    <!-- Update Todo Dialog -->
+    <div id="updateDialog"
+      class="hidden absolute inset-0 backdrop-blur-sm backdrop-brightness-85 flex items-center justify-center">
+      <div class="h-auto w-sm p-8  bg-white rounded-xl shadow-lg flex flex-col items-baseline justify-between">
+        <h2 class="text-xl font-bold mb-6">Edit Task <span id="tasknumber"></span></h2>
+        <form action="/update" method="POST" class="w-full">
+          <input type="hidden" name="id" id="updateId" value="1">
+          <input type="text" name="task" placeholder="Task" id="updateTitle" class="border border-zinc-300 p-2 rounded mb-10 w-full">
+          <div class="flex justify-between w-full">
+            <button type="button" class="w-24 text-white bg-zinc-900 px-4 py-2 rounded" onclick="closeUpdateDialog()">close</button>
+            <button class="w-24 border-2 font-bold px-4 py-2 rounded" onclick="closeUpdateDialog()">submit</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Add Todo Form -->
+    <div
+      class="rounded-xl border border-zinc-200 mx-auto mt-10 flex flex-col items-center justify-center w-1/3 p-5 bg-white shadow-lg">
+      <h1 class="font-bold">Add Todo</h1>
+      <form action="/add" method="POST" class="flex flex-col">
+        <input type="text" name="task" placeholder="Task" class="border border-zinc-300 p-2 rounded mb-4">
+        <button type="submit" class="bg-zinc-900 text-white p-2 rounded">Add</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    openUpdateDialog = (id,title) => {
+      const dialog = document.getElementById('updateDialog');
+      document.getElementById('updateId').value = id;
+      document.getElementById('updateTitle').value = title;
+      document.getElementById('tasknumber').innerText = id;
+      //document.getElementById('updateTitle').value = title;
+      //remove the class to show the dialog
+      dialog.classList.remove('hidden');
+    }
+
+    closeUpdateDialog = () => {
+      const dialog = document.getElementById('updateDialog');
+      //add the class to hide the dialog
+      dialog.classList.add('hidden');
+    }
+
+
+  </script>
+</body>
+
 </html>
